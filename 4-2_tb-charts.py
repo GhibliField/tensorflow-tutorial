@@ -48,7 +48,7 @@ if __name__=='__main__':
     init=tf.global_variables_initializer()
     with tf.Session() as sess:
         writer = tf.summary.FileWriter("logs/", sess.graph)#将上面‘绘画’出的图保存到一个目录中，以方便后期在浏览器中可以浏览。 这个方法中的第二个参数需要使用sess.graph ， 因此我们需要把这句话放在获取session的后面。 这里的graph是将前面定义的框架信息收集起来，然后放在logs/目录下面。
-        merged=tf.summary.merge_all()#接下来， 开始合并打包。该方法方法会对我们所有的 summaries 合并到一起
+        merged=tf.summary.merge_all()#接下来， 开始合并打包。该方法会将我们所有的 summaries 合并到一起
         sess.run(init)
         for i in range(1000):
             sess.run(train_step,feed_dict={xs:x_data,ys:y_data})

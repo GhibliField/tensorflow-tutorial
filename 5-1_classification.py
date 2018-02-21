@@ -39,10 +39,10 @@ train_steps=tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
 init=tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)
-
+    writer=tf.summary.FileWriter('logs/',sess.graph)
+    merged=tf.summary.merge_all()
     for i in range(1000):
         batch_xs, batch_ys = mnist.train.next_batch(100)  # 每次从数据集载入一小批数据
         sess.run(train_steps,feed_dict={xs:batch_xs,ys:batch_ys})
         if i%50==0:
             print(compute_accuracy(mnist.test.images, mnist.test.labels))
-            #tf.summary.scalar(compute_accuracy(mnist.test.images, mnist.test.labels),i)
