@@ -11,7 +11,8 @@ one=tf.constant(1)
 new_value=tf.add(state,one)#tf中的加操作
 update=tf.assign(state,new_value)#tf中的赋值操作，将new_value的值赋值给state
 
-#但凡在图结构中声明了变量，在创建会话前必须进行初始化和激活
+#但凡在图结构中声明了变量，在创建会话前必须对变量初始化
+#也就是说或，虽然在变量定义时给出了变量初始化的方法，但是这个方法并没有真正运行。
 init=tf.global_variables_initializer()#全局变量初始化器
 with tf.Session() as sess:
     sess.run(init)#激活所有变量

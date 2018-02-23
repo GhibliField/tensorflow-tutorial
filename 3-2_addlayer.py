@@ -1,5 +1,5 @@
 """
-这个脚本通过迭代降低损失函数，最终构建一个神经网络结构：一个输入层，一个隐含层，一个输出层
+这个脚本通过迭代降低损失函数，最终构建两层神经网络结构：一个隐含层，一个输出层
 """
 import tensorflow as tf
 import numpy as np
@@ -7,13 +7,13 @@ import numpy as np
 def addlayer(inputs,in_size,out_size,activation_func=None):#in_size表示输入矩阵的列数
     # inputs: (n_samples, n_features) 特征数就是该层连接的输入的神经元的个数
     # weights: (n_features, neurons) neurons就是该层连接的输出神经元个数
-    Weights=tf.Variable(tf.random_normal([in_size,out_size]))#产因为在生成初始参数时，随机变量(normal distribution)会比全部为0要好很多
+    Weights=tf.Variable(tf.random_normal([in_size,out_size]))#因为在生成初始参数时，随机变量(normal distribution)会比全部为0要好很多
+    #一般权重矩阵的shape是（特征数，神经元数即节点数）。tf.random_normal()用于生成正态分布的随机数
     biases=tf.Variable(tf.zeros([1,out_size])+0.1)#在机器学习中，biases的推荐值不为0，所以我们这里是在0向量的基础上又加了0.1。
     Wx_plus_b=tf.matmul(inputs,Weights)+biases#用 `+` 和 tf.add() 是一样的作用
     #注意：矩阵论中接触较多的是Wx形式，而tf的源码的形式是xW.
     #Weights.shape=(n_features, n_outputs), inputs.shape = (n_samples, n_features)
     #所以, i*W = (n_samples, n_outputs),
-    print(Wx_plus_b.shape)
     if activation_func is None:
         outputs=Wx_plus_b
     else:
@@ -43,9 +43,8 @@ if __name__=='__main__':
     y_data = np.square(x_data) - 0.5 + noise
 
     #下面初始化变量并将我们构建的图执行起来
-    init=tf.global_variables_initializer()
     with tf.Session() as sess:
-        sess.run(init)
+        tf.global_variables_initializer().run()
         for i in range(1000):
             sess.run(train_step,feed_dict={xs:x_data,ys:y_data})
             if i%50==0:
