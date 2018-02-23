@@ -31,10 +31,12 @@ if __name__=='__main__':
     prediction=addlayer(l1,10,1,activation_func=None)#第二层，隐层到输出层，输出一个神经元表示
     #这里的输入层只有一个属性， 所以我们就只有一个输入；隐藏层我们可以自己假设，这里我们假设隐藏层有10个神经元；
     # 输出层和输入层的结构是一样的，所以我们的输出层也是只有一层。 所以，我们构建的是——输入层1个、隐藏层10个、输出层1个的神经网络。
-    #计算预测值prediction和真实值的误差，对二者差的平方求和再取平均。
+    #定义损失函数来刻画预测值prediction和真实值的误差，对二者差的平方求和再取平均。
     loss=tf.reduce_mean(tf.reduce_sum(tf.square(ys-prediction),reduction_indices=[1]))
     #reduce_sum中的reduction_indices=[1]表示按行求和，reduction_indices=[0]表示按列求和
-    train_step=tf.train.GradientDescentOptimizer(0.1).minimize(loss)
+    learning_rate=0.1#设置学习率
+    #下面定义反向传播的具体优化方法
+    train_step=tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
 
     # 下面创造一些数据，利用添加噪声让数据看起来更真实
     x_data = np.linspace(-1, 1, 300)[:, np.newaxis]#linspace用于创造[-1,1]内间隔相等的300个数组成的数列
@@ -46,6 +48,6 @@ if __name__=='__main__':
     with tf.Session() as sess:
         tf.global_variables_initializer().run()
         for i in range(1000):
-            sess.run(train_step,feed_dict={xs:x_data,ys:y_data})
+            sess.run(train_step,feed_dict={xs:x_data,ys:y_data})#对所有在GraphKyes.TRAINABLE_VARIABLES集合中的变量进行优化，是的在当前batch下损失函数更小
             if i%50==0:
                 print(sess.run(loss,feed_dict={xs:x_data,ys:y_data}))

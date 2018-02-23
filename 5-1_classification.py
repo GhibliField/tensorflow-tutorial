@@ -41,8 +41,9 @@ with tf.Session() as sess:
     sess.run(init)
     writer=tf.summary.FileWriter('logs/',sess.graph)
     merged=tf.summary.merge_all()
-    for i in range(1000):
+    STEPS=1000#设置训练轮数
+    for i in range(STEPS):
         batch_xs, batch_ys = mnist.train.next_batch(100)  # 每次从数据集载入一小批数据
         sess.run(train_steps,feed_dict={xs:batch_xs,ys:batch_ys})
-        if i%50==0:
+        if i%50==0:#每隔50轮计算准确率
             print(compute_accuracy(mnist.test.images, mnist.test.labels))
