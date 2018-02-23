@@ -22,6 +22,9 @@ def compute_accuracy(v_xs,v_ys):
     global prediction
     y_pred=sess.run(prediction,feed_dict={xs:v_xs})
     correct_prediction=tf.equal(tf.argmax(y_pred,1),tf.argmax(v_ys,1))#预测结果（softmax的结果）中最大值所在索引等于真实验证数据真实分类的one-hot最大值（也就是一个1）的情况
+    #tf.argmax()将返回其第一个参数在某一维度上的最大值所在索引号，0表示按列，1表示按行
+    #tf.equal()返回一个shape与其第一个参数相同的矩阵或向量，其每隔元素的值是两个参数对应位置上数值是否相同的判断结果
+    #tf.cast()用于将第一个参数转换成为第二个参数指定的数据类型，返回转换后的数据
     accuracy=tf.reduce_mean(tf.cast(correct_prediction,tf.float32))
     result=sess.run(accuracy,feed_dict={xs: v_xs, ys: v_ys})
     return result
