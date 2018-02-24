@@ -86,7 +86,7 @@ b_fc2 = bias_variable([10])
 prediction = tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)#多分类时使用softmax,输出是各个类的概率
 
 
-# 定义交叉熵为损失函数
+# 定义交叉熵作为损失函数
 cross_entropy = tf.reduce_mean(-tf.reduce_sum(ys * tf.log(prediction),
                                               reduction_indices=[1]))       # loss
 learning_rate=1e-4

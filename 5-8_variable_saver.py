@@ -15,7 +15,7 @@ with tf.Session() as sess:
     print("variables save to path:",save_path)
 
 #下面从文件中读取变量
-#读取之前要定义好同名变量的shape和数据类型
+#读取之前要定义好同名变量的shape以及数据类型
 # W=tf.Variable(np.arange(6).reshape((2,3)),dtype=tf.float32,name='Weights')
 # b=tf.Variable(np.arange(3).reshape((1,3)),dtype=tf.float32,name='biases')
 #
