@@ -56,12 +56,14 @@ ys = tf.placeholder(tf.float32, [None, 10])
 keep_prob = tf.placeholder(tf.float32)
 x_image = tf.reshape(xs, [-1, 28, 28, 1])
 #tf.reshape(tensor,shape)用于将第一个参数tensor转换成第二个参数shape设置的形状，哪一个维度为-1，那么那个维度实际的大小==(tensor总的元素个数)/(shape中非-1元素的乘积)
+#-1代表先不考虑输入的图片例子多少这个维度，后面的1是channel的数量，因为我们输入的图片是黑白的，因此channel是1，例如如果是RGB图像，那么channel就是3。
 # print(x_image.shape)  # [n_samples, 28,28,1]
 
 ## conv1 layer ##
-W_conv1 = weight_variable([5,5, 1,32]) # filter的height*width== 5x5, 输入通道数为1, 设置输出通道数为32
+W_conv1 = weight_variable([5,5, 1,32]) # filter的height*width== 5x5, 输入通道数为1, 设置输出通道数为32，也就是32个feature maps
 b_conv1 = bias_variable([32])
 h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1) # output size 28x28x32
+#因为采用了SAME的padding方式，输出图片的大小没有变化依然是28x28，只是厚度变厚了，因此现在的输出大小就变成了28x28x32
 h_pool1 = max_pool_2x2(h_conv1)                          # output size 14x14x32
 
 ## conv2 layer ##
@@ -74,14 +76,14 @@ h_pool2 = max_pool_2x2(h_conv2)                          # output size 7x7x64
 W_fc1 = weight_variable([7*7*64, 1024])
 b_fc1 = bias_variable([1024])
 # [n_samples, 7, 7, 64] ->> [n_samples, 7*7*64]
-h_pool2_flat = tf.reshape(h_pool2, [-1, 7*7*64])#将张量扁平化
+h_pool2_flat = tf.reshape(h_pool2, [-1, 7*7*64])#通过tf.reshape()将h_pool2的输出值从一个三维的变为一维的数据, -1表示先不考虑输入图片例子维度, 将上一个输出结果展平.
 h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
 h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)#dropout
 
 ## 定义最后一层输出层fc2  ##
 W_fc2 = weight_variable([1024, 10])
 b_fc2 = bias_variable([10])
-prediction = tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)#多分类时使用softmax
+prediction = tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)#多分类时使用softmax,输出是各个类的概率
 
 
 # 定义交叉熵为损失函数
@@ -94,9 +96,8 @@ with tf.Session() as sess:
     tf.global_variables_initializer().run()
 
     for i in range(1000):
-        batch_xs, batch_ys = mnist.train.next_batch(100)
+        batch_xs, batch_ys = mnist.train.next_batch(100)#每次只取100张图片，免得数据太多训练太慢。
         sess.run(train_step, feed_dict={xs: batch_xs, ys: batch_ys, keep_prob: 0.5})
         if i % 50 == 0:
-            print(compute_accuracy(
-                mnist.test.images[:1000], mnist.test.labels[:1000]))
+            print(compute_accuracy(mnist.test.images[:1000], mnist.test.labels[:1000]))#用测试集验证正确率
 
