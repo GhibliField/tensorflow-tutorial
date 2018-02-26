@@ -34,18 +34,20 @@ ys=tf.placeholder(tf.float32,[None,10])
 
 #定义一层神经网络层
 prediction=add_layer(xs,784,10,activation_function=tf.nn.softmax)
-
+#原始的神经网络的输出不是一个概率分布，要想使用交叉熵，就需要将这个原始输出转换为概率分布的形式，使用softmax来将原始输出转换为概率分布
 #定义损失函数为交叉熵
 cross_entropy=tf.reduce_mean(-tf.reduce_sum(ys*tf.log(prediction),reduction_indices=[1]))
 train_steps=tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
 
-init=tf.global_variables_initializer()
+
 with tf.Session() as sess:
+    init = tf.global_variables_initializer()
     sess.run(init)
     writer=tf.summary.FileWriter('logs/',sess.graph)
     merged=tf.summary.merge_all()
     STEPS=1000#设置训练轮数
     for i in range(STEPS):
+        #为了方便使用随机梯度下降，使用mnist.train.next_batch()从所有的数据中读取一小部分作为一个训练batch
         batch_xs, batch_ys = mnist.train.next_batch(100)  # 每次从数据集载入一小批数据
         sess.run(train_steps,feed_dict={xs:batch_xs,ys:batch_ys})
         if i%50==0:#每隔50轮计算准确率
