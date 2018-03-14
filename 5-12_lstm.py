@@ -36,11 +36,20 @@ def RNN(X,weights,biases):
     X_in=tf.matmul(X,weights['in'])+biases['in']
     X_in=tf.reshape(X_in,[-1,n_steps,n_hidden_units])
     #rnn
-    lstm_cell = tf.contrib.rnn.BasicLSTMCell(n_hidden_units)#这个tuple包含了c_state和mstate
-    _init_state=lstm_cell.zero_state(batch_size,dtype=tf.float32)
+    lstm_cell = tf.contrib.rnn.BasicLSTMCell(n_hidden_units,forget_bias=1.0, state_is_tuple=True)
+    #BasicLSTMCell类是最基本的LSTM循环神经网络单元。这个类没有实现clipping，projection layer，peep-hole等一些lstm的高级变种，仅作为一个基本的baseline结构存在，如果要使用这些高级variant要用LSTMCell这个类。
+    # 输入参数和BasicRNNCell差不多
+    # num_units: LSTM cell层中的单元数
+    # forget_bias: forget gates中的偏置,默认就是1.0
+    # state_is_tuple: 默认就是True, 返回 (c_state , m_state)的二元组
+    _init_state=lstm_cell.zero_state(batch_size,dtype=tf.float32)#初始化为0状态
     outputs,final_state=tf.nn.dynamic_rnn(lstm_cell,X_in,initial_state=_init_state,time_major=False)
+    #tf.nn.dynamic_rnn()实现的功能就是可以让不同迭代传入的batch可以是长度不同数据，但同一次迭代一个batch内部的所有数据长度仍然是固定的。
+    #但是rnn不能这样，它要求每一时刻传入的batch数据的[batch_size, max_seq]，在每次迭代过程中都保持不变。
     #cell之后的隐层
     outputs = tf.unstack(tf.transpose(outputs, [1, 0, 2]))
+    #tf.transpose函数主要适用于交换输入张量的不同维度用的,[1,0,2]表示第一维和第零维对调
+    #tf.unstack用于按照指定维度拆分一个张量
     results = tf.matmul(outputs[-1], weights['out']) + biases['out']  # shape = (128, 10)
     return results
 
