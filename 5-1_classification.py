@@ -5,7 +5,9 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 # number 1 to 10 data
 mnist = input_data.read_data_sets('MNIST_data', one_hot=True)#一共有10个类，使用十比特的one-hot来表示类别
-
+# MNIST是一个手写阿拉伯数字的数据集。
+# 其中包含有60000个已经标注了的训练集，还有10000个用于测试的测试集。
+# 任务就是通过手写数字的图片，识别出具体写的是0-9之中的哪个数字。
 
 def add_layer(inputs, in_size, out_size, activation_function=None,):
     # add one more layer and return the output of this layer
