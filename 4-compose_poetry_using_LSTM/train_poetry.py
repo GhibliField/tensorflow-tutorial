@@ -31,12 +31,12 @@ if __name__ == '__main__':
             feed = {inputs:x_batch,targets:y_batch,initial_state:next_state,keep_prob:0.5}
             train_loss, _ ,next_state = sess.run([loss,optimizer,last_state], feed_dict=feed)
             print("step:%d loss:%f" % (step,train_loss))
-            if step > 40000:
+            if step > 10:
                 break
             if step%1000 == 0:
                 n = step/1000
                 sess.run(tf.assign(learning_rate, 0.002 * (0.97 ** n)))
             step += 1
-        if not os.path.exists('pickled_models'):
-            os.mkdir('pickled_models')
-        saver.save(sess,"pickled_models/poetry_model.ckpt")
+        # if not os.path.exists('pickled_models'):
+        #     os.mkdir('pickled_models')
+        saver.save(sess,"./poetry_model.ckpt")
