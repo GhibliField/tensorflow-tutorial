@@ -11,7 +11,7 @@
 
 ## 获取训练数据
 
-**chat.conv **:4 万首古诗数据
+**chat.conv ** :4 万首古诗数据
 
 ## 数据预处理
 使用**generate_poetry.py**
