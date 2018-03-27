@@ -5,7 +5,6 @@
 import tensorflow as tf
 import os
 from tensorflow.examples.tutorials.mnist import input_data
-
 import mnist_inference
 
 #配置神经网络参数
