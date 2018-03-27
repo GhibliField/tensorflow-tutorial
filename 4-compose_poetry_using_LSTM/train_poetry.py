@@ -1,7 +1,7 @@
 #-*- coding:utf-8 -*-
 import tensorflow as tf
 from poetry_model import poetryModel
-
+import os
 from generate_poetry import Poetry
 
 if __name__ == '__main__':
@@ -37,4 +37,6 @@ if __name__ == '__main__':
                 n = step/1000
                 sess.run(tf.assign(learning_rate, 0.002 * (0.97 ** n)))
             step += 1
-        saver.save(sess,"poetry_model.ckpt")
+        if not os.path.exists('pickled_models'):
+            os.mkdir('pickled_models')
+        saver.save(sess,"pickled_models/poetry_model.ckpt")
